@@ -1,0 +1,33 @@
+// @see - https://www.electron.build/configuration/configuration
+{
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "com.breakreminder.app",
+  "asar": true,
+  "productName": "Break Reminder",
+  "directories": {
+    "output": "release/${version}"
+  },
+  "files": [
+    "dist",
+    "dist-electron"
+  ],
+  "win": {
+    "icon": "public/icon.png",
+    "target": [
+      "nsis",
+      "portable",
+      "dir"
+    ],
+    "verifyUpdateCodeSignature": false,
+    "artifactName": "${productName}-Windows-${version}.${ext}"
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "deleteAppDataOnUninstall": false
+  }
+
+}
+
+
