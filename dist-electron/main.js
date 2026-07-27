@@ -1,7 +1,7 @@
-import { app as i, BrowserWindow as d, ipcMain as p, screen as h, nativeImage as R, Tray as P, Menu as _ } from "electron";
-import { fileURLToPath as b } from "node:url";
+import { app as i, BrowserWindow as d, ipcMain as p, screen as g, nativeImage as R, Tray as P, Menu as j } from "electron";
+import { fileURLToPath as _ } from "node:url";
 import r from "node:path";
-const E = [
+const b = [
   {
     interval: 45 * 60 * 1e3,
     reminder: {
@@ -27,37 +27,53 @@ const E = [
     }
   },
   {
+    interval: 150 * 60 * 1e3,
+    reminder: {
+      emoji: "💺",
+      title: "Hora de sentarte",
+      message: "Volvé a sentarte y acomodá tu postura."
+    }
+  },
+  {
     interval: 180 * 60 * 1e3,
     reminder: {
       emoji: "🍎",
       title: "Comé algo",
       message: "Hacé una pausa y comé algo."
     }
+  },
+  {
+    interval: 60 * 60 * 1e3,
+    reminder: {
+      emoji: "👀",
+      title: "Descansá la vista",
+      message: "Mirar lejos durante unos segundos."
+    }
   }
 ];
-function I() {
+function E() {
   const t = /* @__PURE__ */ new Date(), n = t.getDay(), o = t.getHours(), s = n >= 1 && n <= 5, l = o >= 8 && o < 19;
   return s && l;
 }
-function j(t) {
-  E.forEach(({ interval: n, reminder: o }) => {
+function I(t) {
+  b.forEach(({ interval: n, reminder: o }) => {
     setInterval(() => {
-      I() && t(o);
+      E() && t(o);
     }, n);
   });
 }
-const f = r.dirname(b(import.meta.url));
-process.env.APP_ROOT = r.join(f, "..");
-const u = process.env.VITE_DEV_SERVER_URL, C = r.join(process.env.APP_ROOT, "dist-electron"), y = r.join(process.env.APP_ROOT, "dist");
+const h = r.dirname(_(import.meta.url));
+process.env.APP_ROOT = r.join(h, "..");
+const u = process.env.VITE_DEV_SERVER_URL, A = r.join(process.env.APP_ROOT, "dist-electron"), y = r.join(process.env.APP_ROOT, "dist");
 process.env.VITE_PUBLIC = u ? r.join(process.env.APP_ROOT, "public") : y;
 let e = null, c = null, a = null;
-const g = {
+const f = {
   emoji: "⏱️",
   title: "Recordatorio de prueba",
   message: "Esta es una prueba del overlay."
 };
-function w() {
-  const t = h.getPrimaryDisplay(), { width: n, height: o } = t.bounds;
+function v() {
+  const t = g.getPrimaryDisplay(), { width: n, height: o } = t.bounds;
   e = new d({
     x: 0,
     y: 0,
@@ -73,7 +89,7 @@ function w() {
     backgroundColor: "#121212",
     icon: r.join(process.env.VITE_PUBLIC, "icon.png"),
     webPreferences: {
-      preload: r.join(f, "preload.mjs"),
+      preload: r.join(h, "preload.mjs"),
       contextIsolation: !0,
       nodeIntegration: !1
     }
@@ -82,11 +98,11 @@ function w() {
 function k() {
   const t = r.join(process.env.VITE_PUBLIC, "icon.png"), n = R.createFromPath(t);
   c = new P(n), c.setToolTip("Break Reminder");
-  const o = _.buildFromTemplate([
+  const o = j.buildFromTemplate([
     {
       label: "Mostrar prueba",
       click: () => {
-        m(g);
+        m(f);
       }
     },
     { type: "separator" },
@@ -99,7 +115,7 @@ function k() {
   ]);
   c.setContextMenu(o);
 }
-function L() {
+function D() {
   i.setLoginItemSettings({
     openAtLogin: !0,
     path: i.getPath("exe")
@@ -108,33 +124,33 @@ function L() {
 function m(t) {
   if (!e) return;
   a && (clearTimeout(a), a = null);
-  const n = h.getPrimaryDisplay(), { x: o, y: s, width: l, height: v } = n.bounds;
-  e.setBounds({ x: o, y: s, width: l, height: v }), e.setAlwaysOnTop(!0, "screen-saver"), e.setKiosk(!0), e.show(), e.focus(), e.webContents.send("reminder", t), a = setTimeout(() => {
-    T();
+  const n = g.getPrimaryDisplay(), { x: o, y: s, width: l, height: T } = n.bounds;
+  e.setBounds({ x: o, y: s, width: l, height: T }), e.setAlwaysOnTop(!0, "screen-saver"), e.setKiosk(!0), e.show(), e.focus(), e.webContents.send("reminder", t), a = setTimeout(() => {
+    w();
   }, 1e4);
 }
-function T() {
+function w() {
   e && (a && (clearTimeout(a), a = null), e.webContents.send("hide-overlay"), e.hide());
 }
 i.on("window-all-closed", () => {
   process.platform !== "darwin" && (i.quit(), e = null);
 });
 i.on("activate", () => {
-  d.getAllWindows().length === 0 && w();
+  d.getAllWindows().length === 0 && v();
 });
 p.on("show-overlay", () => {
-  m(g);
+  m(f);
 });
 p.on("hide-overlay", () => {
-  T();
+  w();
 });
 i.whenReady().then(() => {
-  w(), k(), L(), j((t) => {
+  v(), k(), D(), I((t) => {
     m(t);
   });
 });
 export {
-  C as MAIN_DIST,
+  A as MAIN_DIST,
   y as RENDERER_DIST,
   u as VITE_DEV_SERVER_URL
 };
